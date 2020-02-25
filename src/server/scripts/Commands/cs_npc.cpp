@@ -212,7 +212,7 @@ public:
         if (Transport* tt = chr->GetTransport())
             if (MotionTransport* trans = tt->ToMotionTransport())
             {
-                uint32 guid = sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT);
+                uint32 guid = sObjectMgr->GenerateRecycledLowGuid(HIGHGUID_UNIT);
                 CreatureData& data = sObjectMgr->NewOrExistCreatureData(guid);
                 data.id = id;
                 data.phaseMask = chr->GetPhaseMaskForSpawn();
@@ -230,7 +230,7 @@ public:
             }
 
         Creature* creature = new Creature();
-        if (!creature->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, chr->GetPhaseMaskForSpawn(), id, 0, x, y, z, o))
+        if (!creature->Create(sObjectMgr->GenerateRecycledLowGuid(HIGHGUID_UNIT), map, chr->GetPhaseMaskForSpawn(), id, 0, x, y, z, o))
         {
             delete creature;
             return false;
@@ -295,7 +295,7 @@ public:
             return false;
         }
 
-        uint32 vendor_entry = vendor ? vendor->GetEntry() : 0;
+        uint32 vendor_entry = vendor->GetEntry();
 
         if (!sObjectMgr->IsVendorItemValid(vendor_entry, itemId, maxcount, incrtime, extendedcost, handler->GetSession()->GetPlayer()))
         {
@@ -603,10 +603,11 @@ public:
     static bool HandleNpcSetOriginalFaction(ChatHandler* handler, const char* /*args*/)
     {
         Player* me = handler->GetSession()->GetPlayer();
-        Creature* creature = me->GetSelectedUnit()->ToCreature();
 
         if (!me)
             return false;
+
+        Creature* creature = me->GetSelectedUnit()->ToCreature();
 
         if (!creature)
             return false;
@@ -741,7 +742,7 @@ public:
         for (uint8 i = 0; i < NPCFLAG_COUNT; i++)
             if (npcflags & npcFlagTexts[i].flag)
                 handler->PSendSysMessage(npcFlagTexts[i].text, npcFlagTexts[i].flag);
-        
+
         handler->PSendSysMessage(LANG_NPCINFO_MECHANIC_IMMUNE, mechanicImmuneMask);
         for (uint8 i = 1; i < MAX_MECHANIC; ++i)
             if (mechanicImmuneMask & (1 << (mechanicImmunes[i].flag - 1)))

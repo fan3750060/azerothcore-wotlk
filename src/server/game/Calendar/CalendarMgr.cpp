@@ -34,6 +34,12 @@ CalendarMgr::~CalendarMgr()
             delete *itr2;
 }
 
+CalendarMgr* CalendarMgr::instance()
+{
+    static CalendarMgr instance;
+    return &instance;
+}
+
 void CalendarMgr::LoadFromDB()
 {
     uint32 count = 0;
@@ -655,6 +661,6 @@ void CalendarMgr::SendPacketToAllEventRelatives(WorldPacket packet, CalendarEven
     CalendarInviteStore invites = _invites[calendarEvent.GetEventId()];
     for (CalendarInviteStore::iterator itr = invites.begin(); itr != invites.end(); ++itr)
         if (Player* player = ObjectAccessor::FindPlayerInOrOutOfWorld((*itr)->GetInviteeGUID()))
-            if (!calendarEvent.IsGuildEvent() || (calendarEvent.IsGuildEvent() && player->GetGuildId() != calendarEvent.GetGuildId()))
+            if (!calendarEvent.IsGuildEvent() || player->GetGuildId() != calendarEvent.GetGuildId())
                 player->SendDirectMessage(&packet);
 }

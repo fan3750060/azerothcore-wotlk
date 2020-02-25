@@ -747,7 +747,8 @@ class WorldObject : public Object, public WorldLocation
 #endif
 
         void GetNearPoint2D(float &x, float &y, float distance, float absAngle) const;
-        void GetNearPoint(WorldObject const* searcher, float &x, float &y, float &z, float searcher_size, float distance2d, float absAngle) const;
+        void GetNearPoint(WorldObject const* searcher, float &x, float &y, float &z, float searcher_size, float distance2d, float absAngle, float controlZ = 0) const;
+        void GetVoidClosePoint(float& x, float& y, float& z, float size, float distance2d = 0, float relAngle = 0, float controlZ = 0) const;
         bool GetClosePoint(float &x, float &y, float &z, float size, float distance2d = 0, float angle = 0, const WorldObject* forWho = NULL, bool force = false) const;
         void MovePosition(Position &pos, float dist, float angle);
         void GetNearPosition(Position &pos, float dist, float angle)
@@ -780,6 +781,8 @@ class WorldObject : public Object, public WorldLocation
         {
             return (m_valuesCount > UNIT_FIELD_COMBATREACH) ? m_floatValues[UNIT_FIELD_COMBATREACH] : DEFAULT_WORLD_OBJECT_SIZE;
         }
+
+        virtual float GetCombatReach() const { return 0.0f; } // overridden (only) in Unit
         void UpdateGroundPositionZ(float x, float y, float &z) const;
         void UpdateAllowedPositionZ(float x, float y, float &z) const;
 
@@ -974,6 +977,8 @@ class WorldObject : public Object, public WorldLocation
 
         bool isActiveObject() const { return m_isActive; }
         void setActive(bool isActiveObject);
+        bool IsVisibilityOverridden() const { return m_isVisibilityDistanceOverride; }
+        void SetVisibilityDistanceOverride(bool isVisibilityDistanceOverride);
         void SetWorldObject(bool apply);
         bool IsPermanentWorldObject() const { return m_isWorldObject; }
         bool IsWorldObject() const;
@@ -1018,6 +1023,7 @@ class WorldObject : public Object, public WorldLocation
     protected:
         std::string m_name;
         bool m_isActive;
+        bool m_isVisibilityDistanceOverride;
         const bool m_isWorldObject;
         ZoneScript* m_zoneScript;
 
@@ -1056,7 +1062,7 @@ class WorldObject : public Object, public WorldLocation
         bool CanDetectStealthOf(WorldObject const* obj, bool checkAlert = false) const;
 };
 
-namespace Trinity
+namespace acore
 {
     // Binary predicate to sort WorldObjects based on the distance to a reference WorldObject
     class ObjectDistanceOrderPred
