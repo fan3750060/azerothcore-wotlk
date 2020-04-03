@@ -73,12 +73,16 @@ set_target_properties(worldserver
   PROPERTIES
     FOLDER
       "server")
+	  
+if(${CMAKE_GENERATOR} STREQUAL "Ninja")
+  set(NINJA_ESCAPE_CHARACTER $)
+endif()
 
 if( WIN32 )
   if ( MSVC )
     add_custom_command(TARGET worldserver
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/worldserver.conf.dist ${CMAKE_BINARY_DIR}/bin/$(ConfigurationName)/
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/worldserver.conf.dist ${CMAKE_BINARY_DIR}/bin/${NINJA_ESCAPE_CHARACTER}$(ConfigurationName)/
     )
   elseif ( MINGW )
     add_custom_command(TARGET worldserver
@@ -108,7 +112,7 @@ if( WIN32 )
   if ( MSVC )
     add_custom_command(TARGET worldserver
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy "${configFile}" ${CMAKE_BINARY_DIR}/bin/$(ConfigurationName)/
+      COMMAND ${CMAKE_COMMAND} -E copy "${configFile}" ${CMAKE_BINARY_DIR}/bin/${NINJA_ESCAPE_CHARACTER}$(ConfigurationName)/
     )
   elseif ( MINGW )
     add_custom_command(TARGET worldserver

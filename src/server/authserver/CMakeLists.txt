@@ -61,12 +61,16 @@ set_target_properties(authserver
   PROPERTIES
     FOLDER
       "server")
+	  
+if(${CMAKE_GENERATOR} STREQUAL "Ninja")
+  set(NINJA_ESCAPE_CHARACTER $)
+endif()
 
 if( WIN32 )
   if ( MSVC )
     add_custom_command(TARGET authserver
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/authserver.conf.dist ${CMAKE_BINARY_DIR}/bin/$(ConfigurationName)/
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/authserver.conf.dist ${CMAKE_BINARY_DIR}/bin/${NINJA_ESCAPE_CHARACTER}$(ConfigurationName)/
     )
   elseif ( MINGW )
     add_custom_command(TARGET authserver
