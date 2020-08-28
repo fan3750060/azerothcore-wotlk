@@ -651,7 +651,7 @@ void WorldSession::HandleAuctionListOwnerItems(WorldPacket & recvData)
     uint32 listfrom;
 
     recvData >> guid;
-    recvData >> listfrom;
+    recvData >> listfrom;       // not used in fact (this list does not have page control in client)
 
     // pussywizard:
     const uint32 delay = 4500;
@@ -679,7 +679,7 @@ void WorldSession::HandleAuctionListOwnerItemsEvent(uint64 creatureGuid)
     if (!creature)
     {
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-        sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: HandleAuctionListOwnerItems - Unit (GUID: %u) not found or you can't interact with him.", uint32(GUID_LOPART(guid)));
+        sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: HandleAuctionListOwnerItems - Unit (GUID: %u) not found or you can't interact with him.", uint32(GUID_LOPART(creatureGuid)));
 #endif
         return;
     }
